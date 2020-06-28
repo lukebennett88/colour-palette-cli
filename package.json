@@ -1,6 +1,6 @@
 {
   "name": "colour-palette-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Generate color palettes in JSON from your CLI, for use with Tailwind CSS or anything you like.",
   "author": "Luke Bennett <hello@lukebennett.com.au>",
   "license": "MIT",
