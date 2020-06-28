@@ -1,104 +1,104 @@
-"use strict";
-var convert = require('color-convert');
+const convert = require('color-convert');
 
 module.exports = class Palette {
+  constructor({ primary, wantsGrays, wantsUtilities }) {
+    this.primary = primary;
+    this.wantsGrays = wantsGrays;
+    this.wantsUtilities = wantsUtilities;
+    this.grays = {};
+    this.primaries = {};
+    this.utilities = {};
 
-    constructor ({ primary, wantsGrays, wantsUtilities }) {
+    return (async () => {
+      await this.generatePrimaries();
 
-        this.primary = primary;
-        this.wantsGrays = wantsGrays;
-        this.wantsUtilities = wantsUtilities;
-        this.grays = {};
-        this.primaries = {};
-        this.utilities = {};
+      if (wantsGrays) {
+        await this.generateGrays();
+      }
 
-        return (async () => {
-            await this.generatePrimaries();
+      if (wantsUtilities) {
+        await this.generateUtilities();
+      }
 
-            if (wantsGrays) {
-                await this.generateGrays();
-            }
-    
-            if (wantsUtilities) {
-                await this.generateUtilities();
-            }
-    
-            return this;
-        })();
+      return this;
+    })();
+  }
+
+  getColours() {
+    let palette = { ...this.primaries };
+
+    if (this.wantsGrays) {
+      palette = { ...palette, ...this.grays };
     }
 
-    getColors () {
-        let palette = {...this.primaries};
-
-        if (this.wantsGrays) {
-            palette = {...palette, ...this.grays}
-        }
-
-        if (this.wantsUtilities) {
-            palette = {...palette, ...this.utilities}
-        }
-
-        return palette;
+    if (this.wantsUtilities) {
+      palette = { ...palette, ...this.utilities };
     }
 
-    async generatePrimaries () {
-        const hex = this.primary;
-        const hsl = convert.hex.hsl(hex);
+    return palette;
+  }
 
-        const hue = hsl[0];
+  async generatePrimaries() {
+    const hex = this.primary;
+    const hsl = convert.hex.hsl(hex);
 
-        let hsl_array = [
-            [hue, 100, 97],
-            [hue, 96, 89],
-            [hue, 93, 77],
-            [hue, 90, 65],
-            [hue, 84, 57],
-            [hue, 75, 50],
-            [hue, 71, 44],
-            [hue, 65, 37],
-            [hue, 61, 30],
-        ];
+    const hue = hsl[0];
 
-        const primaries = this.generateColorHash({ hsl_array, name: 'primary' });
-        return this.primaries = { ...primaries, primary: this.primary };
-    }
+    const hslArray = [
+      [hue, 100, 97],
+      [hue, 96, 89],
+      [hue, 93, 77],
+      [hue, 90, 65],
+      [hue, 84, 57],
+      [hue, 75, 50],
+      [hue, 71, 44],
+      [hue, 65, 37],
+      [hue, 61, 30],
+    ];
 
-    async generateGrays () {
-        const hex = this.primary;
-        const hsl = convert.hex.hsl(hex);
+    const primaries = this.generateColourHash({ hslArray, name: 'primary' });
+    return (this.primaries = {
+      ...primaries,
+      primary: this.primary.toLowerCase(),
+    });
+  }
 
-        const hue = hsl[0];
+  async generateGrays() {
+    const hex = this.primary;
+    const hsl = convert.hex.hsl(hex);
 
-        const hsl_array = [
-            [hue, 45, 98],
-            [hue, 38, 95],
-            [hue, 32, 91],
-            [hue, 25, 84],
-            [hue, 20, 69],
-            [hue, 15, 52],
-            [hue, 17, 35],
-            [hue, 23, 23],
-            [hue, 26, 24],
-        ];
+    const hue = hsl[0];
 
-        return this.grays = this.generateColorHash({ hsl_array, name: 'gray' });
-    }
+    const hslArray = [
+      [hue, 45, 98],
+      [hue, 38, 95],
+      [hue, 32, 91],
+      [hue, 25, 84],
+      [hue, 20, 69],
+      [hue, 15, 52],
+      [hue, 17, 35],
+      [hue, 23, 23],
+      [hue, 26, 24],
+    ];
 
-    generateColorHash({ hsl_array, name }) {
-        return hsl_array.reduce((object, color, index) => {
-            const identifier = `${name}-${index + 1}00`;
-            const hex = convert.hsl.hex(color);
-            object[identifier] = `#${hex}`;
-            return object;
-        }, {});
-    }
+    return (this.grays = this.generateColourHash({ hslArray, name: 'gray' }));
+  }
 
-    async generateUtilities () {
-        return this.utilities = {
-            success: '#1AC79E',
-            error: '#E73434',
-            warning: '#F1AA20'
-        }
-    }
+  // eslint-disable-next-line class-methods-use-this
+  generateColourHash({ hslArray, name }) {
+    return hslArray.reduce((object, colour, index) => {
+      const identifier = `${name}-${index + 1}00`;
+      const hex = convert.hsl.hex(colour);
+      object[identifier] = `#${hex.toLowerCase()}`;
+      return object;
+    }, {});
+  }
 
-}
+  async generateUtilities() {
+    return (this.utilities = {
+      success: '#1ac79e',
+      error: '#e73434',
+      warning: '#f1aa20',
+    });
+  }
+};
