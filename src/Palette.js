@@ -1,8 +1,9 @@
 const convert = require('color-convert');
 
 module.exports = class Palette {
-  constructor({ primary, wantsGrays, wantsUtilities }) {
+  constructor({ primary, paletteName, wantsGrays, wantsUtilities }) {
     this.primary = primary;
+    this.paletteName = paletteName;
     this.wantsGrays = wantsGrays;
     this.wantsUtilities = wantsUtilities;
     this.grays = {};
@@ -56,10 +57,13 @@ module.exports = class Palette {
       [hue, 61, 30],
     ];
 
-    const primaries = this.generateColourHash({ hslArray, name: 'primary' });
+    const primaries = this.generateColourHash({
+      hslArray,
+      name: this.paletteName,
+    });
     return (this.primaries = {
       ...primaries,
-      primary: this.primary.toLowerCase(),
+      [this.paletteName]: this.primary.toLowerCase(),
     });
   }
 

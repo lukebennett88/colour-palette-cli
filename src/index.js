@@ -25,6 +25,14 @@ inquirer
       },
     },
     {
+      name: 'paletteName',
+      type: 'input',
+      message: 'What name do you want to give this palette?',
+      default() {
+        return 'primary';
+      },
+    },
+    {
       name: 'grays',
       type: 'confirm',
       message: 'Would you like a complementary gray palette?',
@@ -37,11 +45,16 @@ inquirer
     },
   ])
   .then(async (answers) => {
-    const { primary } = answers;
+    const { primary, paletteName } = answers;
     const wantsGrays = answers.grays;
     const wantsUtilities = answers.utilities;
 
-    const palette = await new Palette({ primary, wantsGrays, wantsUtilities });
+    const palette = await new Palette({
+      primary,
+      paletteName,
+      wantsGrays,
+      wantsUtilities,
+    });
     const colours = palette.getColours();
 
     console.log(chalk.inverse.bold("Here's your palette:"));
