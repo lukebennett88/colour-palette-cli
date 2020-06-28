@@ -42,7 +42,6 @@
     "prettier": "^2.0.5"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
     "release": "np"
   }
