@@ -62,8 +62,8 @@ module.exports = class Palette {
       name: this.paletteName,
     });
     return (this.primaries = {
-      ...primaries,
       [this.paletteName]: this.primary.toLowerCase(),
+      ...primaries,
     });
   }
 
