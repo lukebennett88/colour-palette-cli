@@ -36,12 +36,18 @@ inquirer
       name: 'grays',
       type: 'confirm',
       message: 'Would you like a complementary gray palette?',
+      default() {
+        return false;
+      },
     },
     {
       name: 'utilities',
       type: 'confirm',
       message:
         'Would you like a set of utility colours (success, error, warning)?',
+      default() {
+        return false;
+      },
     },
   ])
   .then(async (answers) => {
